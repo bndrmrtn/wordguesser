@@ -1,7 +1,6 @@
 namespace app;
 
 use db;
-use rand;
 use utils;
 use server;
 use json;
@@ -20,14 +19,14 @@ define App {
             fail(`Failed to start the application & DB Error: {{ err }}`);
         }
         this.session();
-        this.restAPI();
+        server.json();
     }
 
     fn session() {
         let token;
         error err: token = server.request.cookie('session');
         if err != nil || token == '' {
-            token = utils.randomString(32);
+            token = utils.randomString(64);
         }
         this.sessionToken = token;
         server.setCookie(array {
@@ -37,28 +36,37 @@ define App {
         });
     }
 
-    fn restAPI() {
-        server.json();
-    }
+    fn getWordState() {
+        const wordState = state('session:' + this.sessionToken);
+        const data = wordState.get('data');
 
-    fn index() {
-        error err: const word = this.instance.queryRow('SELECT id, word FROM words ORDER BY RANDOM() LIMIT 1');
-        if err != nil {
-            return server.write(json.toString(array {
-                'error': 'Failed to fetch word from database',
-            }));
+        if data == nil {
+            error err: const word = this.instance.queryRow('SELECT id, word FROM words ORDER BY RANDOM() LIMIT 1');
+            if err != nil {
+                fail('Failed to fetch word from database');
+            }
+
+            data = array {
+                id: word.id,
+                word: word.word,
+                guesses: [],
+                incorrect: [],
+            };
+
+            wordState.set('data', data);
+            return data;
         }
 
-        server.write(json.toString(array {
-            application: {
-                name: this.name,
-                version: this.version,
-                session: this.sessionToken,
-            },
-            guess: {
-                word_id: word.id,
-                length: word.word.length,
-            }
+        return data;
+    }
+
+    fn setWordState(word) {
+        state('session:' + this.sessionToken).set('data', word);
+    }
+
+    fn handleError(err) {
+        return server.write(json.toString(array {
+            'error': err,
         }));
     }
 }

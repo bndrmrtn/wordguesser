@@ -2,15 +2,6 @@ namespace db;
 
 const tables = [
     `
-        CREATE TABLE IF NOT EXISTS sessions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ip_address TEXT NOT NULL,
-            token TEXT NOT NULL,
-            word_id INTEGER NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    `,
-    `
         CREATE TABLE IF NOT EXISTS words (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             word TEXT NOT NULL CHECK (LENGTH(word) BETWEEN 4 AND 8)

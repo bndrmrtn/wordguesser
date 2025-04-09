@@ -1,10 +1,27 @@
-namespace main;
+namespace public;
 
 use server;
-use app as core;
+use app;
+use json;
 
 import('../src');
 
-const app = core.App();
+const application = app.App();
 
-app.index();
+error err: const word = application.getWordState();
+if err != nil {
+     return application.handleError(err);
+}
+
+server.write(json.toString(array {
+     application: {
+          name: application.name,
+          version: application.version,
+          session: application.sessionToken,
+     },
+     guess: {
+          length: word.word.length,
+          guesses: word.guesses,
+          incorrect: word.incorrect,
+     }
+}));

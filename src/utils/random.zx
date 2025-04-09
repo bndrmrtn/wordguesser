@@ -12,3 +12,4 @@ fn randomString(length) {
     }
     return result;
 }
+
