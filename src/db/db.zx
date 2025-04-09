@@ -1,0 +1,11 @@
+namespace db;
+
+use sql;
+
+// connect connects to the database
+fn connect() {
+    const instance = sql.open('sqlite3', 'app.db');
+    createTables(instance);
+
+    return instance;
+}

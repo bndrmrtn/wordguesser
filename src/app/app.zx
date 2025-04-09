@@ -1,0 +1,64 @@
+namespace app;
+
+use db;
+use rand;
+use utils;
+use server;
+use json;
+use runtime;
+
+define App {
+    const name = 'WordGuesser';
+    const version = '1.0.0';
+
+    let sessionToken;
+    let instance;
+
+    fn construct() {
+        error err: this.instance = db.connect();
+        if err != nil {
+            fail(`Failed to start the application & DB Error: {{ err }}`);
+        }
+        this.session();
+        this.restAPI();
+    }
+
+    fn session() {
+        let token;
+        error err: token = server.request.cookie('session');
+        if err != nil || token == '' {
+            token = utils.randomString(32);
+        }
+        this.sessionToken = token;
+        server.setCookie(array {
+            name: 'session',
+            value: token,
+            path: '/',
+        });
+    }
+
+    fn restAPI() {
+        server.json();
+    }
+
+    fn index() {
+        error err: const word = this.instance.queryRow('SELECT id, word FROM words ORDER BY RANDOM() LIMIT 1');
+        if err != nil {
+            return server.write(json.toString(array {
+                'error': 'Failed to fetch word from database',
+            }));
+        }
+
+        server.write(json.toString(array {
+            application: {
+                name: this.name,
+                version: this.version,
+                session: this.sessionToken,
+            },
+            guess: {
+                word_id: word.id,
+                length: word.word.length,
+            }
+        }));
+    }
+}

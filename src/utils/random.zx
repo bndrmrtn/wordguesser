@@ -1,0 +1,14 @@
+namespace utils;
+
+use rand;
+
+const chars = string('abcdefghijklmnopqrstuvwxyz0123456789').split('');
+
+fn randomString(length) {
+    let result = '';
+    for i in length {
+        const n = rand.int(0, chars.length - 1);
+        result = result + chars[n];
+    }
+    return result;
+}

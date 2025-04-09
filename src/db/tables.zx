@@ -1,0 +1,64 @@
+namespace db;
+
+const tables = [
+    `
+        CREATE TABLE IF NOT EXISTS sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip_address TEXT NOT NULL,
+            token TEXT NOT NULL,
+            word_id INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    `,
+    `
+        CREATE TABLE IF NOT EXISTS words (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            word TEXT NOT NULL CHECK (LENGTH(word) BETWEEN 4 AND 8)
+        );
+    `
+];
+
+// createTables creates the tables in the database if they do not exist
+fn createTables(inst) {
+    for table in tables {
+        error err: inst.exec(table);
+        if err != nil {
+            fail(`Failed to create table '{{ table }}' & DB Error: {{ err }}`);
+        }
+    }
+    // seedWords(inst);
+}
+
+const seedWordsList = [
+    'apple',
+    'table',
+    'brick',
+    'mouse',
+    'water',
+    'light',
+    'cloud',
+    'dream',
+    'stone',
+    'plant',
+    'music',
+    'grape',
+    'piano',
+    'smile',
+    'bottle',
+    'window',
+    'forest',
+    'coffee',
+    'bridge',
+    'sunset'
+];
+
+fn seedWords(inst) {
+    for word in seedWordsList {
+        const query = `INSERT INTO words (word) VALUES (?);`;
+        error err: inst.exec(query, word);
+        if (err != nil) {
+            fail(`Failed to insert word '{{ word }}' & DB Error: {{ err }}`);
+        }
+        println(`Inserted word '{{ word }}' into the database.`);
+    }
+}

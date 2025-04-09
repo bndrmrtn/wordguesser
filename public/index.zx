@@ -1,0 +1,10 @@
+namespace main;
+
+use server;
+use app as core;
+
+import('../src');
+
+const app = core.App();
+
+app.index();
