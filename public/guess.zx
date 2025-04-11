@@ -3,15 +3,16 @@ namespace public;
 use server;
 use app;
 use http;
+use utils;
+use json;
 
 import('../src');
 
 const application = app.App();
 
-const allowedLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 const letter = server.request.query('letter');
 
-if allowedLetters.contains(letter) == false {
+if utils.allowedLetters.contains(letter) == false {
      return application.handleError('Invalid letter');
 }
 
@@ -28,12 +29,23 @@ if word.guesses.contains(letter) {
      return application.handleError('Letter already guessed');
 }
 
-if word.word.contains(letter) {
-     word.guesses.append(letter);
-} else {
+let ok = word.guesses.checkLetter(letter);
+if !ok {
      word.incorrect.append(letter);
+     application.setWordState(word);
+
+     if application.canDecrementLive() {
+          application.decrement();
+          return server.redirect('/', http.statusSeeOther);
+     } else {
+          return server.write(json.toString({
+               'error': 'Game over',
+          }));
+     }
 }
 
-application.setWordState(word);
+if word.guesses.isGuessed() {
+     application.nextWord();
+}
 
 server.redirect('/', http.statusSeeOther);

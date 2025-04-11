@@ -49,8 +49,10 @@ define App {
             data = array {
                 id: word.id,
                 word: word.word,
-                guesses: [],
+                guesses: Guess(word.word),
                 incorrect: [],
+                lives: 5,
+                score: 0,
             };
 
             wordState.set('data', data);
@@ -58,6 +60,34 @@ define App {
         }
 
         return data;
+    }
+
+    fn canDecrementLive() {
+        const data = this.getWordState();
+        return bool(data.lives > 0);
+    }
+
+    fn decrement() {
+        const data = this.getWordState();
+        if data.lives > 0 {
+            data.lives = data.lives - 1;
+        }
+        this.setWordState(data);
+    }
+
+    fn nextWord() {
+        let data = this.getWordState();
+        const lives = data.lives;
+        const score = data.score;
+        this.setWordState(nil);
+        data = this.getWordState();
+        data.lives = 5;
+        data.score = score + 1;
+        this.setWordState(data);
+    }
+
+    fn failWord() {
+        this.setWordState(nil);
     }
 
     fn setWordState(word) {

@@ -1,0 +1,13 @@
+namespace utils;
+
+fn modifyListItem(list, inx, value) {
+    let newList = [];
+    for i in list.length {
+        if i == inx {
+            newList.append(value);
+        } else {
+            newList.append(list[i]);
+        }
+    }
+    return newList;
+}

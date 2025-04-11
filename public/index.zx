@@ -23,5 +23,7 @@ server.write(json.toString(array {
           length: word.word.length,
           guesses: word.guesses,
           incorrect: word.incorrect,
+          lives: word.lives,
+          score: word.score,
      }
 }));

@@ -1,0 +1,54 @@
+namespace app;
+
+define Guess {
+    let letters = [];
+    let guess = [];
+
+    fn construct(word) {
+        this.letters = word.split('');
+        let guess = [];
+        for _ in this.letters.length {
+            guess.append(nil);
+        }
+        this.guess = guess;
+    }
+
+    fn isGuessed() {
+        const letters = this.letters;
+        const guess = this.guess;
+
+        for i in letters.length {
+            if guess[i] == nil {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    fn checkLetter(letter) {
+        let letters = this.letters;
+        let guess = this.guess;
+
+        if !letters.contains(letter) {
+            return false;
+        }
+
+        for i in letters.length {
+            if letters[i] == letter {
+                guess = utils.modifyListItem(guess, i, letter);
+            }
+        }
+
+        this.guess = guess;
+        return true;
+    }
+
+    fn contains(letter) {
+        return this.guess.contains(letter);
+    }
+
+    fn value() {
+        return this.guess;
+    }
+}
