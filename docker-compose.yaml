@@ -1,0 +1,25 @@
+services:
+  client:
+    build:
+      context: ./client
+    container_name: wordguesser-vue
+    restart: always
+    environment:
+      TZ: "Europe/Budapest"
+  api:
+    build:
+      context: ./api
+    container_name: wordguesser-api
+    restart: always
+  nginx:
+    build: .
+    container_name: wordguesser-nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - client
+      - api
+    links:
+      - client
+      - api
+    restart: always

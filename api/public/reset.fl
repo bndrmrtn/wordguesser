@@ -1,0 +1,18 @@
+namespace public;
+
+use server;
+use app;
+use json;
+
+import('../src');
+
+const application = app.App();
+
+error err: const word = application.getWordState();
+if err != nil {
+    return application.handleError(err);
+}
+
+server.write(json.toString(array {
+    word: application.reset(),
+}));

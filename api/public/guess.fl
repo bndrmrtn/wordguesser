@@ -36,7 +36,7 @@ if !ok {
 
      if application.canDecrementLive() {
           application.decrement();
-          return server.redirect('/', http.statusSeeOther);
+          return server.redirect('/api/', http.statusSeeOther);
      } else {
           return server.write(json.toString({
                'error': 'Game over',
@@ -44,8 +44,4 @@ if !ok {
      }
 }
 
-if word.guesses.isGuessed() {
-     application.nextWord();
-}
-
-server.redirect('/', http.statusSeeOther);
+server.redirect('/api/', http.statusSeeOther);

@@ -47,6 +47,8 @@ define App {
                 fail('Failed to fetch word from database');
             }
 
+            println("THE WORD IS: ", word.word);
+
             data = array {
                 id: word.id,
                 word: word.word,
@@ -91,13 +93,20 @@ define App {
         this.setWordState(nil);
     }
 
-    fn setWordState(word) {
-        state('session:' + this.sessionToken).set('data', word);
+    fn setWordState(w) {
+        state('session:' + this.sessionToken).set('data', w);
     }
 
     fn handleError(err) {
         return server.write(json.toString(array {
             'error': err,
         }));
+    }
+
+    fn reset() {
+        const wordState = getWordState();
+        const word = wordState.word;
+        state('session:' + this.sessionToken).set('data', nil);
+        return word;
     }
 }
