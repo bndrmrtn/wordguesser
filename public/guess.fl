@@ -3,8 +3,8 @@ namespace public;
 use server;
 use app;
 use http;
-use utils;
 use json;
+use flarelang:letters;
 
 import('../src');
 
@@ -12,7 +12,7 @@ const application = app.App();
 
 const letter = server.request.query('letter');
 
-if utils.allowedLetters.contains(letter) == false {
+if letters.lowercase.contains(letter) == false {
      return application.handleError('Invalid letter');
 }
 

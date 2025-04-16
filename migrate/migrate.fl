@@ -1,0 +1,9 @@
+namespace migrate;
+
+use db;
+
+import("../src/db");
+
+const inst = db.connect();
+
+db.seedWords(inst);

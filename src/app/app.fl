@@ -2,6 +2,7 @@ namespace app;
 
 use db;
 use utils;
+use flarelang:randomstring as randString;
 use server;
 use json;
 use runtime;
@@ -26,7 +27,7 @@ define App {
         let token;
         error err: token = server.request.cookie('session');
         if err != nil || token == '' {
-            token = utils.randomString(64);
+            token = randString.newString(64);
         }
         this.sessionToken = token;
         server.setCookie(array {
