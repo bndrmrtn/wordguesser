@@ -107,6 +107,7 @@ define App {
         const wordState = getWordState();
         const word = wordState.word;
         state('session:' + this.sessionToken).set('data', nil);
+        this.nextWord();
         return word;
     }
 }
