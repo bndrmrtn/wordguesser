@@ -28,5 +28,8 @@ RUN flare run migrate/migrate.fl
 
 EXPOSE 3000
 
+# Debug mode added
+ENV DEBUG=true
+
 # Start the app
 CMD ["flare", "start"]
