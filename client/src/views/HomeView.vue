@@ -141,6 +141,12 @@ async function failed() {
 // Reset game
 function resetGame() {
   startGame()
+  window.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase()
+    if (alphabet.includes(key) && !guessedLetters.value.includes(key) && !wrongLetters.value.includes(key) && lives.value > 0) {
+      handleKeyboardClick(key)
+    }
+  })
 }
 
 // Start game when component is mounted
